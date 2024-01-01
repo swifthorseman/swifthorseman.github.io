@@ -5,7 +5,7 @@ date:   2024-01-01 22:00:00 +0000
 categories: blog
 ---
 
-Every once in a while, I come across developers who take pride in having 100% unit test coverage in their code base.  When such developers were asked whether they practise Test-Driven Development (TDD), their response would be ‘No,’ and that the unit tests were added after the code was written.
+Every once in a while, I come across developers boasting about having 100% unit test coverage in their code base.  When such developers were asked whether they practise Test-Driven Development (TDD), their response would be ‘No,’ and that the unit tests were added after the code was written.
 
 Writing unit tests after the code is written and chasing 100% coverage lead to meaningless tests.  To quote Dave Farley, “[you tend to only test that the code that you wrote is the code that you wrote.](https://youtu.be/ln4WnxX-wrw?list=PLwLLcwQlnXByqD3a13UPeT4SMhc3rdZ8q&t=385)”
 
