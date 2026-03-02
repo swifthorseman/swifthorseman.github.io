@@ -5,7 +5,7 @@ date: 2026-02-22 22:02:26 +0000
 categories: blog
 ---
 
-Skatemap Live is a real-time location tracking application for skating events that I've been building as a side project. Skaters broadcast GPS coordinates from their phones; the server receives these updates and pushes them to spectators watching over WebSockets. The backend is built in Scala with **Pekko Streams** handling the message routing — receiving location updates via HTTP, storing them, and broadcasting to connected viewers, a pipeline that needs to stay responsive under sustained load.
+Skatemap Live is a real-time location tracking application for skating events that I've been building as a side project. Skaters broadcast GPS coordinates from their phones; the server receives these updates and pushes them to spectators watching over WebSockets. The backend is built in Scala with **Pekko Streams** handling the message routing—receiving location updates via HTTP, storing them, and broadcasting to connected viewers, a pipeline that needs to stay responsive under sustained load.
 
 During load testing (10 simulated skaters sending updates every 3 seconds) the server was leaking memory at 17.7 MB per minute, calculated from the resident set size (RSS) slope over the 31-minute test run. The growth was linear with no sign of stabilisation. At Railway's 1 GB container limit, that meant the application would be killed in roughly 45 minutes.
 
@@ -19,7 +19,7 @@ In the original Railway test run, memory rose from ~250 MB to ~800 MB over 31 mi
 
 ## Finding the Leak: Eclipse MAT Heap Dump Analysis
 
-Heap dump analysis with **Eclipse Memory Analyzer** (MAT) revealed the culprit immediately. The leak suspects report showed 5,873 instances of `MergeHub$anon$2$anon$3` objects retaining 11.3 MB after a 30-minute test. These were Pekko Streams internal objects — materialised stream graphs that should have been cleaned up. The 11.3 MB retained size reflected heap objects visible to MAT, whereas the much larger RSS growth included JVM metadata, thread stacks, and off-heap memory beyond what a single heap snapshot reports.
+Heap dump analysis with **Eclipse Memory Analyzer** (MAT) revealed the culprit immediately. The leak suspects report showed 5,873 instances of `MergeHub$anon$2$anon$3` objects retaining 11.3 MB after a 30-minute test. These were Pekko Streams internal objects—materialised stream graphs that should have been cleaned up. The 11.3 MB retained size reflected heap objects visible to MAT, whereas the much larger RSS growth included JVM metadata, thread stacks, and off-heap memory beyond what a single heap snapshot reports.
 
 The number roughly matched the expected publish call count: 10 skaters × (30 min × 60 sec / 3 sec interval) = 6,000 calls. The ~2% difference likely reflected the test duration being slightly under 30 minutes or some early objects being garbage collected.
 
